@@ -1,11 +1,28 @@
 <!-- shared styles for all elements and index.html -->
 <dom-module id="shared-styles">
-  <template>
-    <style>
-      paper-material {
-          margin: 32px;
-          padding: 16px;
-      }
-    </style>
-  </template>
+    <template>
+        <style>
+            paper-material {
+                margin: 32px;
+                padding: 16px;
+                background: white;
+            }
+
+            paper-button {
+                background: var(--default-primary-color);
+                color: white;
+                margin-top: 8px;
+            }
+
+            paper-fab {
+                position: absolute;
+                bottom: 24px;
+                right: 16px;
+            }
+
+            paper-dialog {
+                background: white;
+            }
+        </style>
+    </template>
 </dom-module>

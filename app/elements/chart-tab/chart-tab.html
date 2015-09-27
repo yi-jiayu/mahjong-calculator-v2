@@ -1,0 +1,50 @@
+<dom-module id="chart-tab">
+
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            /* CSS rules for your element */
+        </style>
+
+        <!-- local DOM for your element -->
+        <paper-material class="layout vertical center-center">
+            <google-chart
+                id="thischart"
+                options='{"legend": "none"}'
+                type="bar"
+                cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
+                rows="[[chartRows]]">
+            </google-chart>
+        </paper-material>
+    </template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: 'chart-tab',
+
+            // add properties and methods on the element's prototype
+            properties: {
+                // declare properties for the element's public API
+                sessionData: Array,
+
+                chartRows: {
+                    type: Array,
+                    value: function () {
+                        return [['Player 1', 20], ['Player 2', 10], ['Player 3', 30], ['Player 4', 50]];
+                    },
+                    computed: 'formatChartRows(sessionData)'
+                }
+            },
+
+            formatChartRows: function (sessionData) {
+                var rows = [];
+                console.log(sessionData);
+                for (var i = 0; i < 4; i++) {
+                    rows.push([sessionData[i].name, sessionData[i].score]);
+                }
+                return rows;
+            }
+        });
+    </script>
+</dom-module>

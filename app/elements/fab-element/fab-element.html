@@ -1,0 +1,43 @@
+<dom-module id="fab-element">
+
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+        /* CSS rules for your element */
+        </style>
+
+        <!-- local DOM for your element -->
+        <paper-fab icon="add" on-tap="openDialog"></paper-fab>
+
+        <paper-dialog id="addEvent">
+            <h2>Add event</h2>
+            <div>
+                Body
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button dialog-confirm>Confirm</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: 'fab-element',
+
+            // add properties and methods on the element's prototype
+            properties: {
+                // declare properties for the element's public API
+                sessionData: {
+                    type: Array,
+                    notify: true
+                }
+            },
+
+            openDialog: function() {
+                this.$.addEvent.open();
+            }
+        });
+    </script>
+</dom-module>

@@ -62,28 +62,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
 <span id="browser-sync-binding"></span>
 <template is="dom-bind" id="app">
-
     <paper-header-panel>
         <paper-toolbar class="medium-tall">
             <div class="title">Mahjong Calculator</div>
             <paper-tabs class="bottom fit" selected="{{tab}}">
-                <paper-tab>Scores</paper-tab>
-                <paper-tab>Chart</paper-tab>
-                <paper-tab>History</paper-tab>
-                <paper-tab>Config</paper-tab>
+                <paper-tab link><a href="/" class="layout horizontal center-center">Scores</a></paper-tab>
+                <paper-tab link><a href="/chart" class="layout horizontal center-center">Chart</a></paper-tab>
+                <paper-tab link><a href="/history" class="layout horizontal center-center">History</a></paper-tab>
+                <paper-tab link><a href="/config" class="layout horizontal center-center">Config</a></paper-tab>
             </paper-tabs>
         </paper-toolbar>
         <iron-pages selected="{{tab}}">
             <div>
-                <score-tab players="[[sessionData]]"></score-tab>
+                <score-tab session-data="[[sessionData]]"></score-tab>
             </div>
             <div>
-                <paper-material class="layout vertical center-center">
-                    <google-chart
-                        cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
-                        rows='[ ["Something", 1]]'>
-                    </google-chart>
-                </paper-material>
+                <chart-tab id="chart" session-data="[[sessionData]]"></chart-tab>
             </div>
             <div>
                 <paper-material>
@@ -102,9 +96,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-material>
             </div>
             <div>
-                <config-tab id="config" session-data="{{sessionData}}"></config-tab>
+                <config-tab id="config" session-data="{{sessionData}}" session-id="{{sessionId}}"></config-tab>
             </div>
         </iron-pages>
+        <fab-element session-data="{{sessionData}}"></fab-element>
     </paper-header-panel>
 
     <!-- Uncomment next block to enable Service Worker support (1/2) -->

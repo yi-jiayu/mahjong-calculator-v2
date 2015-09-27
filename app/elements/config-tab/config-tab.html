@@ -6,42 +6,53 @@
         <style include="shared-styles"></style>
         <style>
             /* CSS rules for your element */
+            .title {
+                font-size: 18px;
+                font-weight: 500;
+            }
         </style>
 
         <!-- local DOM for your element -->
-        <iron-ajax id="ajaxCreate" url="https://mahjong-calculator.appspot.com/api" method="post" handle-as="text"
+        <iron-ajax id="ajaxCreate" url="http://localhost:8080/api" method="post" handle-as="text"
                    last-response="{{sessionId}}" verbose="true"></iron-ajax>
 
-        <iron-ajax id="ajaxUpdate" url="[[sessionUrl]]" handle-as="json" last-response="{{mahjongUpdate}}"
+        <iron-ajax auto id="ajaxUpdate" url="[[sessionUrl]]" handle-as="json" last-response="{{mahjongUpdate}}"
                    verbose="true"></iron-ajax>
 
         <template is="dom-if" if="[[!existsActiveSession]]">
             <paper-material>
-                <paper-input label="Session Name" value="{{sessionName}}"></paper-input>
-                <paper-button on-tap="getSessionId">Create new Session</paper-button>
+                <div class="title">Create new session</div>
+                    <paper-input label="Session Name" value="{{sessionName}}"></paper-input>
+                <div class="layout horizontal end-justified">
+                    <paper-button raised on-tap="getSessionId">Create</paper-button>
+                </div>
             </paper-material>
         </template>
 
         <template is="dom-if" if="[[existsActiveSession]]">
             <paper-material>
-                <div>[[sessionId]]</div>
-                <div>Names</div>
-                <paper-item>
-                    <paper-input label="Player 1 name" class="flex"></paper-input>
+                <div class="title">Session Info</div>
+                <paper-item disabled="true">
+                    <paper-item-body two-line>
+                        <div secondary>Session ID</div>
+                        <div>[[sessionId]]</div>
+                    </paper-item-body>
                 </paper-item>
-                <paper-item>
-                    <paper-input label="Player 2 name" class="flex"></paper-input>
-                </paper-item>
-                <paper-item>
-                    <div>[[ajaxResponse]]</div>
-                </paper-item>
-                <paper-button on-tap="generateRequest">Generate Request</paper-button>
+            </paper-material>
+            <paper-material>
+                <div class="title">Players</div>
+
+                <template is="dom-repeat" items="{{sessionData}}">
+                    <paper-item disabled="true">
+                        <paper-item-body two-line>
+                            <div secondary>[[item.epithet]]</div>
+                            <div>[[item.name]]</div>
+                        </paper-item-body>
+                    </paper-item>
+                </template>
+
             </paper-material>
         </template>
-
-        <!--        <iron-ajax id="ajaxElement" url="https://hook.io/yi-jiayu/mahjong-calculator/create"
-                           params='{"name": "test_session"}' handle-as="text"
-                           last-response="{{ajaxResponse}}" verbose="true"></iron-ajax>-->
     </template>
 
 
@@ -74,7 +85,7 @@
                 },
 
                 sessionData: {
-                    type: Object,
+                    type: Array,
                     computed: 'parseUpdate(mahjongUpdate)',
                     notify: true
                 }
@@ -85,7 +96,7 @@
             },
 
             computeSessionUrl: function(sessionId) {
-                return 'https://mahjong-calculator.appspot.com/api/' + sessionId;
+                return 'http://localhost:8080/api/' + sessionId;
             },
 
             getSessionId: function () {
@@ -94,11 +105,13 @@
             },
 
             parseUpdate: function(mahjongUpdate) {
-                var sessionData = [];
-                for (var i = 0; i < 4; i++) {
-                    sessionData.push({'name': mahjongUpdate.playerNames[i], 'epithet': mahjongUpdate.playerEpithets[i], 'score': mahjongUpdate.scores[i]});
+                if (mahjongUpdate) {
+                    var sessionData = [];
+                    for (var i = 0; i < 4; i++) {
+                        sessionData.push({'name': mahjongUpdate.playerNames[i], 'epithet': mahjongUpdate.playerEpithets[i], 'score': mahjongUpdate.scores[i]});
+                    }
+                    return sessionData;
                 }
-                return sessionData;
             }
         });
     </script>
