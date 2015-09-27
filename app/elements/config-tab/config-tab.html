@@ -1,0 +1,105 @@
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="config-tab">
+
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            /* CSS rules for your element */
+        </style>
+
+        <!-- local DOM for your element -->
+        <iron-ajax id="ajaxCreate" url="https://mahjong-calculator.appspot.com/api" method="post" handle-as="text"
+                   last-response="{{sessionId}}" verbose="true"></iron-ajax>
+
+        <iron-ajax id="ajaxUpdate" url="[[sessionUrl]]" handle-as="json" last-response="{{mahjongUpdate}}"
+                   verbose="true"></iron-ajax>
+
+        <template is="dom-if" if="[[!existsActiveSession]]">
+            <paper-material>
+                <paper-input label="Session Name" value="{{sessionName}}"></paper-input>
+                <paper-button on-tap="getSessionId">Create new Session</paper-button>
+            </paper-material>
+        </template>
+
+        <template is="dom-if" if="[[existsActiveSession]]">
+            <paper-material>
+                <div>[[sessionId]]</div>
+                <div>Names</div>
+                <paper-item>
+                    <paper-input label="Player 1 name" class="flex"></paper-input>
+                </paper-item>
+                <paper-item>
+                    <paper-input label="Player 2 name" class="flex"></paper-input>
+                </paper-item>
+                <paper-item>
+                    <div>[[ajaxResponse]]</div>
+                </paper-item>
+                <paper-button on-tap="generateRequest">Generate Request</paper-button>
+            </paper-material>
+        </template>
+
+        <!--        <iron-ajax id="ajaxElement" url="https://hook.io/yi-jiayu/mahjong-calculator/create"
+                           params='{"name": "test_session"}' handle-as="text"
+                           last-response="{{ajaxResponse}}" verbose="true"></iron-ajax>-->
+    </template>
+
+
+    <script>
+        // element registration
+        Polymer({
+            is: 'config-tab',
+
+            // add properties and methods on the element's prototype
+            properties: {
+                // declare properties for the element's public API
+                ajaxResponse: {
+                    type: String,
+                    value: 'default value'
+                },
+
+                sessionId: {
+                    type: String
+                },
+
+                existsActiveSession: {
+                    type: Boolean,
+                    value: false,
+                    computed: 'checkSession(sessionId)'
+                },
+
+                sessionUrl: {
+                    type: String,
+                    computed: 'computeSessionUrl(sessionId)'
+                },
+
+                sessionData: {
+                    type: Object,
+                    computed: 'parseUpdate(mahjongUpdate)',
+                    notify: true
+                }
+            },
+
+            checkSession: function (sessionId) {
+                return (sessionId !== '');
+            },
+
+            computeSessionUrl: function(sessionId) {
+                return 'https://mahjong-calculator.appspot.com/api/' + sessionId;
+            },
+
+            getSessionId: function () {
+                this.$.ajaxCreate.body = 'name=' + this.sessionName;
+                this.$.ajaxCreate.generateRequest();
+            },
+
+            parseUpdate: function(mahjongUpdate) {
+                var sessionData = [];
+                for (var i = 0; i < 4; i++) {
+                    sessionData.push({'name': mahjongUpdate.playerNames[i], 'epithet': mahjongUpdate.playerEpithets[i], 'score': mahjongUpdate.scores[i]});
+                }
+                return sessionData;
+            }
+        });
+    </script>
+</dom-module>
