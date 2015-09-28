@@ -3,7 +3,7 @@
     <template>
         <style include="shared-styles"></style>
         <style>
-        /* CSS rules for your element */
+            /* CSS rules for your element */
         </style>
 
         <!-- local DOM for your element -->
@@ -11,12 +11,40 @@
 
         <paper-dialog id="addEvent">
             <h2>Add event</h2>
+
             <div>
-                Body
+                <template is="dom-repeat" items="[[sessionData]]">
+                    <span>[[item.score]]</span>
+                </template>
             </div>
+
+            <div>
+                <div secondary>Winning player</div>
+                <paper-radio-group id="winWinner">
+                    <paper-radio-button name="0">Player 1</paper-radio-button>
+                    <paper-radio-button name="1">Player 2</paper-radio-button>
+                    <paper-radio-button name="2">Player 3</paper-radio-button>
+                    <paper-radio-button name="3">Player 4</paper-radio-button>
+                </paper-radio-group>
+            </div>
+            <div>
+                <div secondary>Points</div>
+                <paper-slider id="winPoints" min="1" max="5" pin expand snaps></paper-slider>
+            </div>
+            <div>
+                <div secondary>Throwing player</div>
+                <paper-radio-group id="winThrower">
+                    <paper-radio-button name="0">Player 1</paper-radio-button>
+                    <paper-radio-button name="1">Player 2</paper-radio-button>
+                    <paper-radio-button name="2">Player 3</paper-radio-button>
+                    <paper-radio-button name="3">Player 4</paper-radio-button>
+                    <paper-radio-button name="4">zi4 mo1</paper-radio-button>
+                </paper-radio-group>
+            </div>
+
             <div class="buttons">
                 <paper-button dialog-dismiss>Cancel</paper-button>
-                <paper-button dialog-confirm>Confirm</paper-button>
+                <paper-button dialog-confirm on-tap="handleWin">Confirm</paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -31,12 +59,70 @@
                 // declare properties for the element's public API
                 sessionData: {
                     type: Array,
-                    notify: true
+                    notify: true,
+                    value: function () {
+                        return [
+                            {name: 'Player 1', epithet: 'Player 1', score: 0},
+                            {name: 'Player 2', epithet: 'Player 2', score: 0},
+                            {name: 'Player 3', epithet: 'Player 3', score: 0},
+                            {name: 'Player 4', epithet: 'Player 4', score: 0}
+                        ];
+                    }
                 }
             },
 
-            openDialog: function() {
+            openDialog: function () {
                 this.$.addEvent.open();
+            },
+
+            handleWin: function () {
+                console.log(this.$.winWinner.selected, this.$.winPoints.value, this.$.winThrower.selected);
+                var data = [];
+                var winner = parseInt(this.$.winWinner.selected);
+                var points = parseInt(Math.pow(2, this.$.winPoints.value - 1));
+                var thrower = parseInt(this.$.winThrower.selected);
+
+                if (thrower === 4) {
+                    for (var i = 0; i < 4; i++) {
+                        if (i === winner) {
+                            data.push({
+                                'name': this.sessionData[i].name,
+                                'epithet': this.sessionData[i].epithet,
+                                'score': this.sessionData[i].score += points * 6
+                            });
+                        } else {
+                            data.push({
+                                'name': this.sessionData[i].name,
+                                'epithet': this.sessionData[i].epithet,
+                                'score': this.sessionData[i].score -= points * 2
+                            });
+                        }
+                    }
+                } else {
+                    for (var j = 0; j < 4; j++) {
+                        if (j === winner) {
+                            data.push({
+                                'name': this.sessionData[j].name,
+                                'epithet': this.sessionData[j].epithet,
+                                'score': this.sessionData[j].score += points * 4
+                            });
+                        } else if (j === thrower) {
+                            data.push({
+                                'name': this.sessionData[j].name,
+                                'epithet': this.sessionData[j].epithet,
+                                'score': this.sessionData[j].score -= points * 2
+                            });
+                        } else {
+                            data.push({
+                                'name': this.sessionData[j].name,
+                                'epithet': this.sessionData[j].epithet,
+                                'score': this.sessionData[j].score -= points
+                            });
+                        }
+                    }
+                }
+                this.sessionData = data;
+                console.log(this.sessionData);
             }
         });
     </script>

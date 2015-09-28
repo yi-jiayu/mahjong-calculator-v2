@@ -72,7 +72,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-tab link><a href="/config" class="layout horizontal center-center">Config</a></paper-tab>
             </paper-tabs>
         </paper-toolbar>
-        <iron-pages selected="{{tab}}">
+        <fab-element id="fab" session-data="{{sessionData}}"></fab-element>
+        <iron-pages selected="[[tab]]">
             <div>
                 <score-tab session-data="[[sessionData]]"></score-tab>
             </div>
@@ -99,7 +100,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <config-tab id="config" session-data="{{sessionData}}" session-id="{{sessionId}}"></config-tab>
             </div>
         </iron-pages>
-        <fab-element session-data="{{sessionData}}"></fab-element>
     </paper-header-panel>
 
     <!-- Uncomment next block to enable Service Worker support (1/2) -->

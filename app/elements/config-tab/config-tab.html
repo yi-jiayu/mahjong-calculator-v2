@@ -17,12 +17,13 @@
                    last-response="{{sessionId}}" verbose="true"></iron-ajax>
 
         <iron-ajax auto id="ajaxUpdate" url="[[sessionUrl]]" handle-as="json" last-response="{{mahjongUpdate}}"
+                   on-response="parseUpdate"
                    verbose="true"></iron-ajax>
 
         <template is="dom-if" if="[[!existsActiveSession]]">
             <paper-material>
                 <div class="title">Create new session</div>
-                    <paper-input label="Session Name" value="{{sessionName}}"></paper-input>
+                <paper-input label="Session Name" value="{{sessionName}}"></paper-input>
                 <div class="layout horizontal end-justified">
                     <paper-button raised on-tap="getSessionId">Create</paper-button>
                 </div>
@@ -86,7 +87,6 @@
 
                 sessionData: {
                     type: Array,
-                    computed: 'parseUpdate(mahjongUpdate)',
                     notify: true
                 }
             },
@@ -95,7 +95,7 @@
                 return (sessionId !== '');
             },
 
-            computeSessionUrl: function(sessionId) {
+            computeSessionUrl: function (sessionId) {
                 return 'http://localhost:8080/api/' + sessionId;
             },
 
@@ -104,13 +104,18 @@
                 this.$.ajaxCreate.generateRequest();
             },
 
-            parseUpdate: function(mahjongUpdate) {
-                if (mahjongUpdate) {
-                    var sessionData = [];
+            parseUpdate: function () {
+                if (this.mahjongUpdate) {
+                    var data = [];
                     for (var i = 0; i < 4; i++) {
-                        sessionData.push({'name': mahjongUpdate.playerNames[i], 'epithet': mahjongUpdate.playerEpithets[i], 'score': mahjongUpdate.scores[i]});
+                        data.push({
+                            'name': this.mahjongUpdate.playerNames[i],
+                            'epithet': this.mahjongUpdate.playerEpithets[i],
+                            'score': this.mahjongUpdate.scores[i]
+                        });
                     }
-                    return sessionData;
+                    console.log('parsed update');
+                    this.sessionData = data;
                 }
             }
         });

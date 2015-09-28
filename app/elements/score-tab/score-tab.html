@@ -11,11 +11,11 @@
             <template is="dom-repeat" items="[[sessionData]]">
                 <paper-item disabled="true">
                     <paper-item-body two-line class="layout vertical">
-                        <div secondary>{{item.epithet}}</div>
-                        <div>{{item.name}}</div>
+                        <div secondary>[[item.epithet]]</div>
+                        <div>[[item.name]]</div>
                     </paper-item-body>
                     <paper-item-body class="layout horizontal end-justified">
-                        <span>{{item.score}}</span>
+                        <span>[[item.score]]</span>
                     </paper-item-body>
                 </paper-item>
             </template>
@@ -30,17 +30,7 @@
             // add properties and methods on the element's prototype
             properties: {
                 // declare properties for the element's public API
-                sessionData: {
-                    type: Array,
-                    value: function () {
-                        return [
-                            {name: 'Player 1', epithet: 'Player 1', score: 10},
-                            {name: 'Player 2', epithet: 'Player 2', score: 20},
-                            {name: 'Player 3', epithet: 'Player 3', score: 30},
-                            {name: 'Player 4', epithet: 'Player 4', score: 40}
-                        ];
-                    }
-                }
+                sessionData: Array
             }
         });
     </script>
