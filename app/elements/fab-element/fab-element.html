@@ -13,18 +13,12 @@
             <h2>Add event</h2>
 
             <div>
-                <template is="dom-repeat" items="[[sessionData]]">
-                    <span>[[item.score]]</span>
-                </template>
-            </div>
-
-            <div>
                 <div secondary>Winning player</div>
                 <paper-radio-group id="winWinner">
-                    <paper-radio-button name="0">Player 1</paper-radio-button>
-                    <paper-radio-button name="1">Player 2</paper-radio-button>
-                    <paper-radio-button name="2">Player 3</paper-radio-button>
-                    <paper-radio-button name="3">Player 4</paper-radio-button>
+                    <paper-radio-button name="0" checked="{{p1win}}">Player 1</paper-radio-button>
+                    <paper-radio-button name="1" checked="{{p2win}}">Player 2</paper-radio-button>
+                    <paper-radio-button name="2" checked="{{p3win}}">Player 3</paper-radio-button>
+                    <paper-radio-button name="3" checked="{{p4win}}">Player 4</paper-radio-button>
                 </paper-radio-group>
             </div>
             <div>
@@ -34,10 +28,10 @@
             <div>
                 <div secondary>Throwing player</div>
                 <paper-radio-group id="winThrower">
-                    <paper-radio-button name="0">Player 1</paper-radio-button>
-                    <paper-radio-button name="1">Player 2</paper-radio-button>
-                    <paper-radio-button name="2">Player 3</paper-radio-button>
-                    <paper-radio-button name="3">Player 4</paper-radio-button>
+                    <paper-radio-button name="0" disabled="[[p1win]]">Player 1</paper-radio-button>
+                    <paper-radio-button name="1" disabled="[[p2win]]">Player 2</paper-radio-button>
+                    <paper-radio-button name="2" disabled="[[p3win]]">Player 3</paper-radio-button>
+                    <paper-radio-button name="3" disabled="[[p4win]]">Player 4</paper-radio-button>
                     <paper-radio-button name="4">zi4 mo1</paper-radio-button>
                 </paper-radio-group>
             </div>
@@ -122,6 +116,9 @@
                     }
                 }
                 this.sessionData = data;
+                this.$.winWinner.selected = null;
+                this.$.winPoints.value = null;
+                this.$.winThrower.selected = null;
                 console.log(this.sessionData);
             }
         });

@@ -1,5 +1,3 @@
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-
 <dom-module id="config-tab">
 
     <template>
@@ -13,12 +11,14 @@
         </style>
 
         <!-- local DOM for your element -->
-        <iron-ajax id="ajaxCreate" url="http://localhost:8080/api" method="post" handle-as="text"
+        <iron-ajax id="ajaxCreate" url="/api" method="post" handle-as="text"
                    last-response="{{sessionId}}" verbose="true"></iron-ajax>
 
         <iron-ajax auto id="ajaxUpdate" url="[[sessionUrl]]" handle-as="json" last-response="{{mahjongUpdate}}"
                    on-response="parseUpdate"
                    verbose="true"></iron-ajax>
+
+        <iron-ajax id="ajaxSend" url="[[sessionUrl]]" method="post" verbose="true"></iron-ajax>
 
         <template is="dom-if" if="[[!existsActiveSession]]">
             <paper-material>
@@ -52,6 +52,10 @@
                     </paper-item>
                 </template>
 
+            </paper-material>
+
+            <paper-material>
+                <paper-button on-tap="getUpdate">Format</paper-button>
             </paper-material>
         </template>
     </template>
@@ -88,6 +92,11 @@
                 sessionData: {
                     type: Array,
                     notify: true
+                },
+
+                formattedUpdate: {
+                    type: String,
+                    computed: 'formatUpdate(sessionData)'
                 }
             },
 
@@ -96,7 +105,7 @@
             },
 
             computeSessionUrl: function (sessionId) {
-                return 'http://localhost:8080/api/' + sessionId;
+                return '/api/' + sessionId;
             },
 
             getSessionId: function () {
@@ -117,6 +126,33 @@
                     console.log('parsed update');
                     this.sessionData = data;
                 }
+            },
+
+            formatUpdate: function(sessionData) {
+
+                if (this.mahjongUpdate) {
+                    var data = this.mahjongUpdate;
+                    var names = [];
+                    var epithets = [];
+                    var scores = [];
+                    for (var i = 0; i < 4; i++) {
+                        names.push(sessionData[i].name);
+                        epithets.push(sessionData[i].epithet);
+                        scores.push(sessionData[i].score);
+                    }
+                    data.playerNames = names;
+                    data.playerEpithets = epithets;
+                    data.scores = scores;
+                    var s = 'jsondata=' + JSON.stringify(data);
+                    console.log(s);
+                    this.$.ajaxSend.body = s;
+                    this.$.ajaxSend.generateRequest();
+                    return s;
+                }
+            },
+
+            getUpdate: function () {
+                this.$.ajaxUpdate.generateRequest();
             }
         });
     </script>
